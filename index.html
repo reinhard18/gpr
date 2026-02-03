@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Fiber | Penyedia Internet Generasi Terbaru</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        'neon-blue': '#00f3ff',
+                        'neon-purple': '#b026ff',
+                        'deep-space': '#05080f',
+                        'glass': 'rgba(15, 23, 42, 0.7)',
+                    },
+                    animation: {
+                        'pulse-glow': 'pulseGlow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        pulseGlow: {
+                            '0%, 100%': { opacity: '1', boxShadow: '0 0 20px rgba(0, 243, 255, 0.2)' },
+                            '50%': { opacity: '0.8', boxShadow: '0 0 10px rgba(0, 243, 255, 0)' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #05080f;
+            color: #e2e8f0;
+        }
+        
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-card {
+            background: linear-gradient(145deg, rgba(30, 41, 59, 0.4), rgba(15, 23, 42, 0.4));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            border-color: #00f3ff;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px -10px rgba(0, 243, 255, 0.2);
+        }
+
+        .neon-text {
+            text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+        }
+        
+        /* Speedometer Animation */
+        .speed-circle {
+            stroke-dasharray: 251;
+            stroke-dashoffset: 251;
+            animation: speedUp 2s ease-out forwards;
+        }
+        
+        @keyframes speedUp {
+            to { stroke-dashoffset: 20; }
+        }
+    </style>
+</head>
+<body class="relative overflow-x-hidden selection:bg-neon-blue selection:text-black">
+
+    <!-- Network Topology Background Canvas -->
+    <canvas id="networkCanvas" class="fixed top-0 left-0 w-full h-full -z-10 opacity-20 pointer-events-none"></canvas>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 glass-panel border-b border-slate-800/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex items-center gap-3">
+                    <div class="relative">
+                        <i data-lucide="zap" class="text-neon-blue h-8 w-8 fill-neon-blue/20"></i>
+                        <div class="absolute inset-0 bg-neon-blue blur-lg opacity-40"></div>
+                    </div>
+                    <span class="font-bold text-2xl tracking-tighter text-white">NEXUS<span class="text-neon-blue">FIBER</span></span>
+                </div>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#home" class="text-sm font-medium hover:text-neon-blue transition-colors">Beranda</a>
+                    <a href="#plans" class="text-sm font-medium hover:text-neon-blue transition-colors">Residensial</a>
+                    <a href="#business" class="text-sm font-medium hover:text-neon-blue transition-colors">Bisnis</a>
+                    <a href="#infrastructure" class="text-sm font-medium hover:text-neon-blue transition-colors">Peta Jaringan</a>
+                    <a href="#support" class="bg-white text-black hover:bg-neon-blue hover:text-black transition-colors px-5 py-2.5 rounded-full text-sm font-bold flex items-center gap-2">
+                        <i data-lucide="user" class="w-4 h-4"></i> Portal Klien
+                    </a>
+                </div>
+
+                <!-- Mobile menu button -->
+                <div class="md:hidden">
+                    <button id="mobile-menu-btn" class="text-gray-300 hover:text-white focus:outline-none">
+                        <i data-lucide="menu" class="h-6 w-6"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Panel -->
+        <div id="mobile-menu" class="hidden md:hidden bg-slate-900 border-b border-slate-800">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#home" class="text-gray-300 hover:text-neon-blue block px-3 py-2 rounded-md text-base font-medium">Beranda</a>
+                <a href="#plans" class="text-gray-300 hover:text-neon-blue block px-3 py-2 rounded-md text-base font-medium">Residensial</a>
+                <a href="#business" class="text-gray-300 hover:text-neon-blue block px-3 py-2 rounded-md text-base font-medium">Bisnis</a>
+                <a href="#support" class="text-neon-blue font-bold block px-3 py-2 rounded-md text-base font-medium">Portal Klien</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="min-h-screen flex items-center justify-center pt-20 px-4 relative overflow-hidden">
+        <!-- Glow effects -->
+        <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-neon-blue/10 rounded-full blur-[100px] -z-10"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-neon-purple/10 rounded-full blur-[100px] -z-10"></div>
+
+        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            
+            <!-- Left: Value Prop -->
+            <div class="space-y-8">
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-800/80 border border-slate-700 text-neon-blue text-xs font-bold tracking-widest uppercase">
+                    <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                    Sudah Tersedia di Area Anda
+                </div>
+                <h1 class="text-5xl sm:text-7xl font-extrabold tracking-tight leading-tight">
+                    Internet dengan <br>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-neon-blue to-neon-purple neon-text">Kecepatan Cahaya</span>
+                </h1>
+                <p class="text-slate-400 text-lg max-w-xl leading-relaxed">
+                    Rasakan internet serat optik murni dengan kecepatan gigabit simetris, latensi ultra-rendah, dan tanpa batas data. Masa depan konektivitas sudah tiba.
+                </p>
+                
+                <!-- Availability Checker Form -->
+                <div class="glass-panel p-2 rounded-lg max-w-md flex flex-col sm:flex-row gap-2">
+                    <div class="relative flex-grow">
+                        <i data-lucide="map-pin" class="absolute left-4 top-3.5 text-slate-500 w-5 h-5"></i>
+                        <input type="text" placeholder="Masukkan Kode Pos" class="w-full bg-slate-900/50 border border-slate-700 rounded-md py-3 pl-12 pr-4 text-white focus:outline-none focus:border-neon-blue focus:ring-1 focus:ring-neon-blue transition-all">
+                    </div>
+                    <button class="bg-neon-blue text-black font-bold py-3 px-6 rounded-md hover:bg-cyan-300 transition-colors whitespace-nowrap">
+                        Periksa Ketersediaan
+                    </button>
+                </div>
+                
+                <div class="flex items-center gap-6 text-sm font-mono text-slate-500">
+                    <span class="flex items-center gap-2"><i data-lucide="check" class="text-green-500 w-4 h-4"></i> Tanpa Kontrak</span>
+                    <span class="flex items-center gap-2"><i data-lucide="check" class="text-green-500 w-4 h-4"></i> Instalasi Gratis</span>
+                </div>
+            </div>
+
+            <!-- Right: Visualizer -->
+            <div class="relative hidden lg:block animate-float">
+                <!-- Abstract Speedometer / Connection Visual -->
+                <div class="relative w-96 h-96 mx-auto">
+                    <!-- Outer Ring -->
+                    <div class="absolute inset-0 border-4 border-slate-800 rounded-full"></div>
+                    <!-- Speed Ring SVG -->
+                    <svg class="absolute inset-0 w-full h-full -rotate-90 transform" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="40" fill="none" stroke="#1e293b" stroke-width="4" />
+                        <circle cx="50" cy="50" r="40" fill="none" stroke="#00f3ff" stroke-width="4" class="speed-circle" stroke-linecap="round" />
+                    </svg>
+                    
+                    <!-- Center Data -->
+                    <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+                        <div class="text-slate-400 text-sm font-mono mb-1">UNDUHAN</div>
+                        <div class="text-6xl font-black text-white tracking-tighter">1<span class="text-2xl text-neon-blue">Gbps</span></div>
+                        <div class="w-12 h-1 bg-slate-800 my-4 rounded-full overflow-hidden">
+                            <div class="h-full bg-green-500 animate-pulse w-full"></div>
+                        </div>
+                        <div class="text-slate-400 text-sm font-mono">PING: 2ms</div>
+                    </div>
+
+                    <!-- Orbital Particles -->
+                    <div class="absolute -inset-8 border border-dashed border-slate-700 rounded-full animate-[spin_10s_linear_infinite]"></div>
+                    <div class="absolute -top-2 left-1/2 w-4 h-4 bg-neon-purple rounded-full blur-sm"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Bar -->
+    <section class="border-y border-slate-800 bg-black/40 backdrop-blur-sm">
+        <div class="max-w-7xl mx-auto px-4 py-8 grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div class="flex items-center gap-4">
+                <i data-lucide="globe" class="text-neon-blue w-8 h-8"></i>
+                <div>
+                    <div class="text-2xl font-bold text-white">99.99%</div>
+                    <div class="text-xs text-slate-500 font-mono">WAKTU AKTIF JARINGAN</div>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <i data-lucide="zap" class="text-neon-purple w-8 h-8"></i>
+                <div>
+                    <div class="text-2xl font-bold text-white">10 Gbps</div>
+                    <div class="text-xs text-slate-500 font-mono">KECEPATAN BACKBONE</div>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <i data-lucide="users" class="text-green-400 w-8 h-8"></i>
+                <div>
+                    <div class="text-2xl font-bold text-white">50k+</div>
+                    <div class="text-xs text-slate-500 font-mono">PENGGUNA PUAS</div>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <i data-lucide="headphones" class="text-orange-400 w-8 h-8"></i>
+                <div>
+                    <div class="text-2xl font-bold text-white">24/7</div>
+                    <div class="text-xs text-slate-500 font-mono">DUKUNGAN LOKAL</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Residential Plans -->
+    <section id="plans" class="py-24 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-white">Paket Fiber untuk <span class="text-neon-blue">Setiap Rumah</span></h2>
+                <p class="mt-4 text-slate-400">Harga sederhana. Kecepatan simetris. Tanpa biaya tersembunyi.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                
+                <!-- Plan 1 -->
+                <div class="glass-card p-8 rounded-2xl flex flex-col relative group">
+                    <h3 class="text-xl font-bold text-slate-300 mb-2">Essential</h3>
+                    <div class="flex items-baseline gap-1 mb-6">
+                        <span class="text-4xl font-bold text-white">$49</span>
+                        <span class="text-slate-500">/bln</span>
+                    </div>
+                    <div class="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-600 mb-8">
+                        300 <span class="text-xl text-slate-400 font-medium">Mbps</span>
+                    </div>
+                    <ul class="space-y-4 mb-8 flex-grow">
+                        <li class="flex items-center text-slate-300 text-sm"><i data-lucide="check" class="w-4 h-4 text-green-500 mr-3"></i> Unggah/Unduhan Simetris</li>
+                        <li class="flex items-center text-slate-300 text-sm"><i data-lucide="check" class="w-4 h-4 text-green-500 mr-3"></i> Data Tanpa Batas</li>
+                        <li class="flex items-center text-slate-300 text-sm"><i data-lucide="check" class="w-4 h-4 text-green-500 mr-3"></i> Router Wi-Fi 6 Termasuk</li>
+                    </ul>
+                    <button class="w-full border border-slate-600 text-white font-bold py-3 rounded-lg hover:border-neon-blue hover:text-neon-blue transition-colors">Pilih Paket</button>
+                </div>
+
+                <!-- Plan 2 (Featured) -->
+                <div class="glass-card p-8 rounded-2xl flex flex-col relative border-neon-blue shadow-[0_0_30px_-10px_rgba(0,243,255,0.3)] transform md:-translate-y-4 z-10">
+                    <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-neon-blue text-black text-xs font-bold px-4 py-1 rounded-full uppercase tracking-wider">Paling Populer</div>
+                    <h3 class="text-xl font-bold text-neon-blue mb-2">GigaHome</h3>
+                    <div class="flex items-baseline gap-1 mb-6">
+                        <span class="text-4xl font-bold text-white">$79</span>
+                        <span class="text-slate-500">/bln</span>
+                    </div>
+                    <div class="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-400 mb-8">
+                        1 <span class="text-xl text-slate-400 font-medium">Gbps</span>
+                    </div>
+                    <ul class="space-y-4 mb-8 flex-grow">
+                        <li class="flex items-center text-white text-sm"><i data-lucide="check" class="w-4 h-4 text-neon-blue mr-3"></i> Kecepatan Simetris Sangat Cepat</li>
+                        <li class="flex items-center text-white text-sm"><i data-lucide="check" class="w-4 h-4 text-neon-blue mr-3"></i> Data Tanpa Batas</li>
+                        <li class="flex items-center text-white text-sm"><i data-lucide="check" class="w-4 h-4 text-neon-blue mr-3"></i> Mesh Wi-Fi 6E Canggih</li>
+                        <li class="flex items-center text-white text-sm"><i data-lucide="check" class="w-4 h-4 text-neon-blue mr-3"></i> Dukungan Prioritas</li>
+                    </ul>
+                    <button class="w-full bg-neon-blue text-black font-bold py-3 rounded-lg hover:bg-cyan-300 transition-colors shadow-lg shadow-neon-blue/20">Mulai Sekarang</button>
+                </div>
+
+                <!-- Plan 3 -->
+                <div class="glass-card p-8 rounded-2xl flex flex-col relative">
+                    <h3 class="text-xl font-bold text-neon-purple mb-2">HyperSpeed</h3>
+                    <div class="flex items-baseline gap-1 mb-6">
+                        <span class="text-4xl font-bold text-white">$129</span>
+                        <span class="text-slate-500">/bln</span>
+                    </div>
+                    <div class="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-600 mb-8">
+                        2 <span class="text-xl text-slate-400 font-medium">Gbps</span>
+                    </div>
+                    <ul class="space-y-4 mb-8 flex-grow">
+                        <li class="flex items-center text-slate-300 text-sm"><i data-lucide="check" class="w-4 h-4 text-purple-500 mr-3"></i> Ideal untuk Streaming 8K & Gaming</li>
+                        <li class="flex items-center text-slate-300 text-sm"><i data-lucide="check" class="w-4 h-4 text-purple-500 mr-3"></i> IP Statis Tersedia</li>
+                        <li class="flex items-center text-slate-300 text-sm"><i data-lucide="check" class="w-4 h-4 text-purple-500 mr-3"></i> Router Gaming Pro</li>
+                    </ul>
+                    <button class="w-full border border-slate-600 text-white font-bold py-3 rounded-lg hover:border-neon-purple hover:text-neon-purple transition-colors">Pilih Paket</button>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Business / Enterprise Section -->
+    <section id="business" class="py-24 bg-slate-900/50 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div class="order-2 lg:order-1 relative">
+                    <!-- Tech visual -->
+                    <div class="absolute inset-0 bg-gradient-to-r from-neon-blue to-purple-600 rounded-2xl blur opacity-20"></div>
+                    <div class="relative bg-slate-900 border border-slate-700 rounded-2xl p-8 code-shadow">
+                        <div class="flex items-center gap-2 mb-6 border-b border-slate-700 pb-4">
+                            <i data-lucide="server" class="text-neon-blue"></i>
+                            <span class="font-mono text-sm text-slate-400">Status Jaringan Enterprise</span>
+                        </div>
+                        <div class="space-y-4 font-mono text-sm">
+                            <div class="flex justify-between">
+                                <span class="text-slate-400">Latensi ke AWS (us-east-1)</span>
+                                <span class="text-green-400">2.4ms</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-400">Kehilangan Paket</span>
+                                <span class="text-green-400">0.00%</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-400">Jitter</span>
+                                <span class="text-green-400">< 1ms</span>
+                            </div>
+                            <div class="h-2 bg-slate-800 rounded-full overflow-hidden mt-4">
+                                <div class="h-full bg-neon-blue w-full animate-pulse"></div>
+                            </div>
+                            <div class="text-xs text-center text-slate-500 mt-2">SIRKUIT KHUSUS AKTIF</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="order-1 lg:order-2">
+                    <h2 class="text-3xl font-bold text-white mb-6">Konektivitas Tingkat <br><span class="text-neon-blue">Enterprise</span></h2>
+                    <p class="text-slate-400 mb-8">
+                        Tenagakan bisnis Anda dengan sirkuit fiber khusus, Wi-Fi terkelola, dan solusi SD-WAN. Kami menyediakan keandalan yang aplikasi misi-kritis Anda butuhkan.
+                    </p>
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-start gap-3">
+                            <div class="mt-1 bg-slate-800 p-1 rounded"><i data-lucide="shield-check" class="w-4 h-4 text-neon-blue"></i></div>
+                            <div>
+                                <h4 class="font-bold text-white">Perlindungan DDoS</h4>
+                                <p class="text-sm text-slate-500">Pembersihan otomatis untuk menjaga layanan Anda tetap online.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <div class="mt-1 bg-slate-800 p-1 rounded"><i data-lucide="activity" class="w-4 h-4 text-neon-blue"></i></div>
+                            <div>
+                                <h4 class="font-bold text-white">SLA 99.999%</h4>
+                                <p class="text-sm text-slate-500">Waktu aktif terjamin dengan dukungan keuangan.</p>
+                            </div>
+                        </li>
+                    </ul>
+                    <a href="#contact" class="inline-flex items-center gap-2 text-neon-blue font-bold hover:gap-4 transition-all">
+                        Hubungi Penjualan Enterprise <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Support / Contact Section -->
+    <section id="support" class="py-24">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="glass-panel rounded-2xl p-8 md:p-12 text-center border border-slate-700">
+                <div class="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-6 text-neon-blue">
+                    <i data-lucide="life-buoy" class="w-8 h-8"></i>
+                </div>
+                <h2 class="text-3xl font-bold text-white mb-4">Kami Siap Membantu</h2>
+                <p class="text-slate-400 mb-8">Baik Anda ingin beralih penyedia atau membutuhkan bantuan teknis, tim lokal kami siap membantu.</p>
+                
+                <div class="grid md:grid-cols-2 gap-4 mb-8">
+                    <button class="bg-slate-800 hover:bg-slate-700 text-white p-4 rounded-lg flex items-center justify-center gap-3 transition-colors border border-slate-700">
+                        <i data-lucide="phone" class="text-neon-blue"></i>
+                        <div class="text-left">
+                            <div class="text-xs text-slate-400">Saluran Penjualan</div>
+                            <div class="font-bold">1-800-NEXUS-GO</div>
+                        </div>
+                    </button>
+                    <button class="bg-slate-800 hover:bg-slate-700 text-white p-4 rounded-lg flex items-center justify-center gap-3 transition-colors border border-slate-700">
+                        <i data-lucide="message-square" class="text-green-400"></i>
+                        <div class="text-left">
+                            <div class="text-xs text-slate-400">Obrolan Langsung</div>
+                            <div class="font-bold">Mulai Percakapan</div>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-12 border-t border-slate-800 bg-slate-900">
+        <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div class="col-span-1 md:col-span-1">
+                <div class="flex items-center gap-2 mb-4">
+                    <i data-lucide="zap" class="text-neon-blue h-6 w-6"></i>
+                    <span class="font-bold text-xl text-white">NEXUS<span class="text-neon-blue">FIBER</span></span>
+                </div>
+                <p class="text-slate-500 text-sm">Memberdayakan komunitas dengan serat optik generasi berikutnya.</p>
+            </div>
+            
+            <div>
+                <h4 class="text-white font-bold mb-4">Layanan</h4>
+                <ul class="space-y-2 text-sm text-slate-400">
+                    <li><a href="#" class="hover:text-neon-blue">Internet Residensial</a></li>
+                    <li><a href="#" class="hover:text-neon-blue">Fiber Bisnis</a></li>
+                    <li><a href="#" class="hover:text-neon-blue">Ethernet Khusus</a></li>
+                    <li><a href="#" class="hover:text-neon-blue">Wi-Fi Terkelola</a></li>
+                </ul>
+            </div>
+            
+            <div>
+                <h4 class="text-white font-bold mb-4">Dukungan</h4>
+                <ul class="space-y-2 text-sm text-slate-400">
+                    <li><a href="#" class="hover:text-neon-blue">Periksa Status Layanan</a></li>
+                    <li><a href="#" class="hover:text-neon-blue">Uji Kecepatan</a></li>
+                    <li><a href="#" class="hover:text-neon-blue">Portal Penagihan</a></li>
+                    <li><a href="#" class="hover:text-neon-blue">Hubungi Kami</a></li>
+                </ul>
+            </div>
+            
+            <div>
+                <h4 class="text-white font-bold mb-4">Perusahaan</h4>
+                <ul class="space-y-2 text-sm text-slate-400">
+                    <li><a href="#" class="hover:text-neon-blue">Tentang Kami</a></li>
+                    <li><a href="#" class="hover:text-neon-blue">Karir</a></li>
+                    <li><a href="#" class="hover:text-neon-blue">Peta Jaringan</a></li>
+                    <li><a href="#" class="hover:text-neon-blue">Kebijakan Privasi</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="text-center text-slate-600 text-xs mt-12">
+            © 2024 Nexus Fiber LLC. Semua hak dilindungi. Klaim kecepatan didasarkan pada koneksi berkabel.
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        // Mobile Menu Toggle
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+
+        btn.addEventListener('click', () => {
+            menu.classList.toggle('hidden');
+        });
+
+        // --------------------------------------------------------
+        // Network Canvas Animation (Nodes and Links)
+        // --------------------------------------------------------
+        const canvas = document.getElementById('networkCanvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let particles = [];
+
+        function resize() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 0.3;
+                this.vy = (Math.random() - 0.5) * 0.3;
+                this.size = Math.random() * 2 + 1;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                if (this.x < 0 || this.x > width) this.vx *= -1;
+                if (this.y < 0 || this.y > height) this.vy *= -1;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = '#00f3ff';
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            const particleCount = Math.min(Math.floor(width * height / 12000), 80);
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+        }
+        initParticles();
+        window.addEventListener('resize', initParticles);
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < 150) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(0, 243, 255, ${1 - distance / 150})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+    </script>
+</body>
+</html>
