@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Pratama Ruralindo</title>
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        'neon-blue': '#00f3ff',
+                        'neon-purple': '#b026ff',
+                        'deep-space': '#05080f',
+                        'glass': 'rgba(15, 23, 42, 0.7)',
+                    },
+                    animation: {
+                        'pulse-glow': 'pulseGlow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        pulseGlow: {
+                            '0%, 100%': { opacity: '1', boxShadow: '0 0 20px rgba(0, 243, 255, 0.2)' },
+                            '50%': { opacity: '0.8', boxShadow: '0 0 10px rgba(0, 243, 255, 0)' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #05080f;
+            color: #e2e8f0;
+        }
+        
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-card {
+            background: linear-gradient(145deg, rgba(30, 41, 59, 0.4), rgba(15, 23, 42, 0.4));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            border-color: #00f3ff;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px -10px rgba(0, 243, 255, 0.2);
+        }
+
+        .neon-text {
+            text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+        }
+        
+        /* Speedometer Animation */
+        .speed-circle {
+            stroke-dasharray: 251;
+            stroke-dashoffset: 251;
+            animation: speedUp 2s ease-out forwards;
+        }
+        
+        @keyframes speedUp {
+            to { stroke-dashoffset: 20; }
+        }
+    </style>
+</head>
+<body class="relative overflow-x-hidden selection:bg-neon-blue selection:text-black">
+
+    <!-- Network Topology Background Canvas -->
+    <canvas id="networkCanvas" class="fixed top-0 left-0 w-full h-full -z-10 opacity-20 pointer-events-none"></canvas>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 glass-panel border-b border-slate-800/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex items-center gap-3">
+                    <div class="relative">
+                        <img src="/images/logo.jpeg" alt="Logo" class="h-8 w-8 rounded-full">
+                        <div class="absolute inset-0 bg-neon-blue blur-lg opacity-40"></div>
+                    </div>
+                    <span class="font-bold text-2xl tracking-tighter text-white">Global <span class="text-neon-blue">Pratama Ruralindo</span></span>
+                </div>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#home" class="text-sm font-medium hover:text-neon-blue transition-colors">Beranda</a>
+                    <a href="#plans" class="text-sm font-medium hover:text-neon-blue transition-colors">Residensial</a>
+                    <a href="#business" class="text-sm font-medium hover:text-neon-blue transition-colors">Dedicated</a>
+                    <a href="https://api.whatsapp.com/send/?phone=6285138425238&text=Halo+saya+ingin+berlangganan+dengan+promo+terbaru&type=phone_number&app_absent=0" class="bg-white text-black hover:bg-neon-blue hover:text-black transition-colors px-5 py-2.5 rounded-full text-sm font-bold flex items-center gap-2">
+                        Mulai Langganan <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </a>
+                </div>
+
+                <!-- Mobile menu button -->
+                <div class="md:hidden">
+                    <button id="mobile-menu-btn" class="text-gray-300 hover:text-white focus:outline-none">
+                        <i data-lucide="menu" class="h-6 w-6"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Panel -->
+        <div id="mobile-menu" class="hidden md:hidden bg-slate-900 border-b border-slate-800">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#home" class="text-gray-300 hover:text-neon-blue block px-3 py-2 rounded-md text-base font-medium">Beranda</a>
+                <a href="#plans" class="text-gray-300 hover:text-neon-blue block px-3 py-2 rounded-md text-base font-medium">Residensial</a>
+                <a href="#business" class="text-gray-300 hover:text-neon-blue block px-3 py-2 rounded-md text-base font-medium">Dedicated</a>
+                <a href="https://api.whatsapp.com/send/?phone=6285138425238&text=Halo+saya+ingin+berlangganan+dengan+promo+terbaru&type=phone_number&app_absent=0" class="text-neon-blue font-bold block px-3 py-2 rounded-md text-base font-medium">Mulai Langganan</a>
+            </div>
+        </div>
+    </nav>
+
+ 
+
+
+ 
+
+    <!-- Form Langganan -->
+    <section id="support" class="py-24">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-extrabold neon-text mb-4">Formulir Langganan Layanan Internet</h2>
+                <p class="text-slate-400">Isi formulir di bawah ini untuk memulai langganan layanan internet kami.</p>
+            </div>
+
+            <form class="glass-panel p-8 rounded-lg space-y-6">
+                <!-- Nama Field -->
+                <div>
+                    <label for="nama" class="block text-sm font-medium text-white mb-2">Nama</label>
+                    <input 
+                        type="text" 
+                        id="nama" 
+                        name="nama" 
+                        placeholder="Masukkan nama Anda"
+                        class="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-neon-blue focus:ring-1 focus:ring-neon-blue transition-colors"
+                        required
+                    >
+                </div>
+
+                <!-- Alamat Field -->
+                <div>
+                    <label for="alamat" class="block text-sm font-medium text-white mb-2">Alamat</label>
+                    <textarea 
+                        id="alamat" 
+                        name="alamat" 
+                        placeholder="Masukkan alamat lengkap Anda"
+                        rows="3"
+                        class="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-neon-blue focus:ring-1 focus:ring-neon-blue transition-colors resize-none"
+                        required
+                    ></textarea>
+                </div>
+
+                <!-- Paket Dropdown -->
+                <div>
+                    <label for="paket" class="block text-sm font-medium text-white mb-2">Pilih Paket</label>
+                    <select 
+                        id="paket" 
+                        name="paket"
+                        class="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-neon-blue focus:ring-1 focus:ring-neon-blue transition-colors"
+                        required
+                    >
+                        <option value="">-- Pilih Paket --</option>
+                        <option value="family-basic">Family Basic</option>
+                        <option value="family-ultra">Family Ultra</option>
+                        <option value="family-gold">Paket Family Gold</option>
+                    </select>
+                </div>
+
+                <!-- KTP File Upload -->
+                <div>
+                    <label for="ktp" class="block text-sm font-medium text-white mb-2">Unggah KTP (Kartu Tanda Penduduk)</label>
+                    <input 
+                        type="file" 
+                        id="ktp" 
+                        name="ktp"
+                        accept="image/*,.pdf"
+                        class="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-neon-blue focus:ring-1 focus:ring-neon-blue transition-colors cursor-pointer file:cursor-pointer file:bg-neon-blue file:text-black file:border-0 file:px-4 file:py-2 file:rounded-lg file:font-bold"
+                        required
+                    >
+                    <p class="text-xs text-slate-400 mt-1">Format yang diterima: JPG, PNG, PDF (Maksimal 5MB)</p>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="pt-4">
+                    <button 
+                        type="submit"
+                        id="submitBtn"
+                        class="w-full bg-neon-blue text-black hover:bg-cyan-400 font-bold py-2.5 px-4 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        Daftar Sekarang
+                    </button>
+                    <p id="submitMessage" class="text-center text-sm mt-3 text-slate-400"></p>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    
+
+    <footer class="py-12 border-t border-slate-800 bg-slate-900">
+        <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div class="col-span-1 md:col-span-1">
+                <div class="flex items-center gap-2 mb-4">
+                    <img src="images/logo.jpeg" alt="Logo" class="h-6 w-6 rounded-full">
+                    <span class="font-bold text-xl text-white">Global <span class="text-neon-blue">Pratama Ruralindo</span></span>
+                </div>
+                <p class="text-slate-500 text-sm">Memberdayakan komunitas dengan serat optik generasi berikutnya.</p>
+
+            </div>
+            
+            <div>
+                <h4 class="text-white font-bold mb-4">Layanan</h4>
+                <ul class="space-y-2 text-sm text-slate-400">
+                    <li><a href="#" class="hover:text-neon-blue">Internet Residensial</a></li>
+                    <li><a href="#" class="hover:text-neon-blue">Fiber Bisnis</a></li>
+                    <li><a href="#" class="hover:text-neon-blue">Ethernet Khusus</a></li>
+                    <li><a href="#" class="hover:text-neon-blue">Wi-Fi Terkelola</a></li>
+                </ul>
+            </div>
+            
+            <div>
+                <h4 class="text-white font-bold mb-4">Dukungan</h4>
+                <ul class="space-y-2 text-sm text-slate-400">
+                    <li><a href="#" class="hover:text-neon-blue">Periksa Status Layanan</a></li>
+                    <li><a href="#" class="hover:text-neon-blue">Uji Kecepatan</a></li>
+                    <li><a href="#" class="hover:text-neon-blue">Portal Penagihan</a></li>
+                    <li><a href="#" class="hover:text-neon-blue">Hubungi Kami</a></li>
+                </ul>
+            </div>
+            
+            <div>
+                <h4 class="text-white font-bold mb-4">Perusahaan</h4>
+                <ul class="space-y-2 text-sm text-slate-400">
+                    <li><a href="#" class="hover:text-neon-blue">Tentang Kami</a></li>
+                    <li><a href="#" class="hover:text-neon-blue">Karir</a></li>
+                    <li><a href="#" class="hover:text-neon-blue">Peta Jaringan</a></li>
+                    <li><a href="#" class="hover:text-neon-blue">Kebijakan Privasi</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="text-center text-slate-600 text-xs mt-12">
+            © 2026  PT GLobal Pratama Ruralindo. Semua hak dilindungi. Klaim kecepatan didasarkan pada koneksi berkabel.
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // REPLACE_THIS_WITH_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL
+        const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/d/YOUR_DEPLOYMENT_ID/usercallback';
+
+        // Initialize Icons
+        lucide.createIcons();
+
+        // Mobile Menu Toggle
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+
+        btn.addEventListener('click', () => {
+            menu.classList.toggle('hidden');
+        });
+
+        // Form Submission Handler
+        document.querySelector('form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const submitMessage = document.getElementById('submitMessage');
+            const formData = new FormData();
+
+            // Get form values
+            const nama = document.getElementById('nama').value;
+            const alamat = document.getElementById('alamat').value;
+            const paket = document.getElementById('paket').value;
+            const ktpFile = document.getElementById('ktp').files[0];
+
+            // Validate file size (5MB max)
+            if (ktpFile && ktpFile.size > 5 * 1024 * 1024) {
+                submitMessage.textContent = 'File terlalu besar. Maksimal 5MB.';
+                submitMessage.classList.add('text-red-500');
+                return;
+            }
+
+            // Prepare data
+            formData.append('nama', nama);
+            formData.append('alamat', alamat);
+            formData.append('paket', paket);
+            formData.append('file', ktpFile);
+
+            submitBtn.disabled = true;
+            submitMessage.textContent = 'Mengirim data...';
+            submitMessage.classList.remove('text-red-500');
+            submitMessage.classList.add('text-neon-blue');
+
+            try {
+                const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    submitMessage.textContent = '✓ Data berhasil dikirim! Kami akan menghubungi Anda segera.';
+                    submitMessage.classList.remove('text-neon-blue');
+                    submitMessage.classList.add('text-green-500');
+                    document.querySelector('form').reset();
+                } else {
+                    submitMessage.textContent = '✗ ' + (result.message || 'Terjadi kesalahan. Silakan coba lagi.');
+                    submitMessage.classList.remove('text-neon-blue');
+                    submitMessage.classList.add('text-red-500');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                submitMessage.textContent = '✗ Gagal mengirim data. Periksa koneksi Anda.';
+                submitMessage.classList.remove('text-neon-blue');
+                submitMessage.classList.add('text-red-500');
+            } finally {
+                submitBtn.disabled = false;
+            }
+        });
+
+        // --------------------------------------------------------
+        // Network Canvas Animation (Nodes and Links)
+        // --------------------------------------------------------
+        const canvas = document.getElementById('networkCanvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let particles = [];
+
+        function resize() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 0.3;
+                this.vy = (Math.random() - 0.5) * 0.3;
+                this.size = Math.random() * 2 + 1;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                if (this.x < 0 || this.x > width) this.vx *= -1;
+                if (this.y < 0 || this.y > height) this.vy *= -1;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = '#00f3ff';
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            const particleCount = Math.min(Math.floor(width * height / 12000), 80);
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+        }
+        initParticles();
+        window.addEventListener('resize', initParticles);
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < 150) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(0, 243, 255, ${1 - distance / 150})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+    </script>
+</body>
+</html>

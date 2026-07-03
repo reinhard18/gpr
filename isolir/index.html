@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Layanan Terisolir | Global Pratama Ruralindo (CSS Murni)</title>
+    <link rel="icon" href="../images/favicon.ico" type="image/x-icon">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600;800&display=swap"
+        rel="stylesheet">
+
+    <style>
+        /* Pure CSS variables for exact GPR brand colors and aesthetics */
+        :root {
+            --neon-blue: #00f3ff;
+            --neon-purple: #b026ff;
+            --neon-red: #ff3b30;
+            --neon-orange: #ff9f0a;
+            --deep-space: #05080f;
+            --glass-bg: rgba(15, 23, 42, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --slate-300: #cbd5e1;
+            --slate-400: #94a3b8;
+            --slate-500: #64748b;
+            --slate-700: rgba(51, 65, 85, 0.5);
+            --slate-800: #1e293b;
+            --slate-850: #0f172a;
+            --slate-900: #0f172a;
+            --slate-950: #020617;
+        }
+
+        /* Base styles */
+        body {
+            background-color: var(--deep-space);
+            color: #e2e8f0;
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        *,
+        *:before,
+        *:after {
+            box-sizing: inherit;
+        }
+
+        .scroll-smooth {
+            scroll-behavior: smooth;
+        }
+
+        .relative {
+            position: relative;
+        }
+
+        /* Glassmorphic UI styling */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+        }
+
+        .glass-card {
+            background: linear-gradient(145deg, rgba(30, 41, 59, 0.4), rgba(15, 23, 42, 0.4));
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            border-color: var(--neon-orange);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px -10px rgba(255, 159, 10, 0.15);
+        }
+
+        /* Navigation Bar Styles */
+        .nav-bar {
+            position: fixed;
+            width: 100%;
+            z-index: 50;
+            height: 80px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(30, 41, 59, 0.5);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 100%;
+        }
+
+        @media (max-width: 640px) {
+            .nav-container {
+                padding: 0 16px;
+            }
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-wrapper {
+            position: relative;
+            width: 32px;
+            height: 32px;
+        }
+
+        .logo-img {
+            height: 32px;
+            width: 32px;
+            border-radius: 50%;
+            display: block;
+        }
+
+        .logo-glow {
+            position: absolute;
+            inset: 0;
+            background-color: var(--neon-orange);
+            filter: blur(8px);
+            opacity: 0.4;
+            border-radius: 50%;
+            z-index: -1;
+        }
+
+        .brand-name {
+            font-weight: bold;
+            font-size: 24px;
+            letter-spacing: -0.05em;
+            color: #ffffff;
+        }
+
+        .brand-accent {
+            color: var(--neon-orange);
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            border-radius: 9999px;
+            background: rgba(127, 29, 29, 0.4);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: var(--neon-orange);
+            font-size: 10px;
+            font-weight: bold;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .status-badge-dot-container {
+            position: relative;
+            display: flex;
+            height: 6px;
+            width: 6px;
+        }
+
+        .status-badge-dot-ping {
+            position: absolute;
+            display: inline-flex;
+            height: 100%;
+            width: 100%;
+            border-radius: 50%;
+            background-color: var(--neon-orange);
+            opacity: 0.75;
+            animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+        }
+
+        .status-badge-dot {
+            position: relative;
+            display: inline-flex;
+            border-radius: 50%;
+            height: 6px;
+            width: 6px;
+            background-color: var(--neon-orange);
+        }
+
+        @keyframes ping {
+
+            75%,
+            100% {
+                transform: scale(2.5);
+                opacity: 0;
+            }
+        }
+
+        /* Main Container */
+        .main-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 112px 16px 64px 16px;
+            position: relative;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+
+        .content-wrapper {
+            max-width: 768px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* Background Particle & Glow Layouts */
+        .glow-1 {
+            position: absolute;
+            top: 25%;
+            left: 33%;
+            width: 384px;
+            height: 384px;
+            background-color: rgba(255, 159, 10, 0.05);
+            border-radius: 50%;
+            filter: blur(120px);
+            z-index: -10;
+            pointer-events: none;
+        }
+
+        .glow-2 {
+            position: absolute;
+            bottom: 25%;
+            right: 33%;
+            width: 384px;
+            height: 384px;
+            background-color: rgba(255, 59, 48, 0.05);
+            border-radius: 50%;
+            filter: blur(120px);
+            z-index: -10;
+            pointer-events: none;
+        }
+
+        .bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -10;
+            opacity: 0.15;
+            pointer-events: none;
+        }
+
+        /* Alert Warning Notice Block */
+        .alert-banner {
+            padding: 32px 24px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 159, 10, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 0 30px rgba(255, 159, 10, 0.05);
+            text-align: left;
+        }
+
+        .alert-icon-wrapper {
+            width: 96px;
+            height: 96px;
+            border-radius: 50%;
+            background-color: rgba(255, 159, 10, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--neon-orange);
+            flex-shrink: 0;
+            animation: pulse-warning 2s infinite;
+        }
+
+        @keyframes pulse-warning {
+
+            0%,
+            100% {
+                transform: scale(1);
+                filter: drop-shadow(0 0 15px rgba(255, 159, 10, 0.6));
+            }
+
+            50% {
+                transform: scale(0.95);
+                filter: drop-shadow(0 0 5px rgba(255, 159, 10, 0.2));
+            }
+        }
+
+        .alert-text-wrapper {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .alert-notice-text {
+            color: var(--slate-300);
+            font-size: 14px;
+            line-height: 1.6;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .alert-notice-text p {
+            margin: 0;
+        }
+
+        .alert-signature {
+            font-size: 12px;
+            color: var(--slate-500);
+            margin-top: 4px;
+        }
+
+        /* Payment Section Styles */
+        .payment-section {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .payment-header {
+            font-size: 18px;
+            font-weight: bold;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0 8px;
+            margin: 0;
+        }
+
+        .payment-header i {
+            color: var(--neon-blue);
+        }
+
+        /* Accordion Structure */
+        .accordion-item {
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            overflow: hidden;
+        }
+
+        .accordion-trigger {
+            width: 100%;
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            text-align: left;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #ffffff;
+            outline: none;
+            transition: background-color 0.2s;
+        }
+
+        .accordion-trigger:hover {
+            background-color: rgba(15, 23, 42, 0.3);
+        }
+
+        .accordion-title-block {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .bank-badge {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            background-color: #00529B;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6px;
+            flex-shrink: 0;
+        }
+
+        .bank-badge img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .bank-title {
+            font-weight: 600;
+            font-size: 14px;
+            color: #ffffff;
+        }
+
+        .verification-tag {
+            font-size: 12px;
+            color: var(--neon-orange);
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: normal;
+            margin-left: 8px;
+        }
+
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .accordion-active .accordion-content {
+            max-height: 500px;
+            transition: max-height 0.5s ease-in;
+        }
+
+
+        .accordion-inner-panel {
+            padding: 8px 24px 24px 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* Clipboard Copy Card Box */
+        .copy-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: var(--slate-950);
+            padding: 12px 16px;
+            border-radius: 8px;
+            border: 1px solid var(--slate-700);
+        }
+
+        .copy-details {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .copy-label {
+            font-size: 10px;
+            color: var(--slate-500);
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: 0.05em;
+        }
+
+        .copy-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 16px;
+            font-weight: bold;
+            color: #ffffff;
+            letter-spacing: 0.05em;
+            user-select: all;
+        }
+
+        .copy-btn {
+            background: none;
+            border: none;
+            padding: 8px;
+            border-radius: 6px;
+            color: var(--neon-blue);
+            cursor: pointer;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            outline: none;
+        }
+
+        .copy-btn:hover {
+            background-color: var(--slate-800);
+        }
+
+        .receiver-text {
+            font-size: 12px;
+            color: var(--slate-400);
+        }
+
+        .receiver-text strong {
+            color: #ffffff;
+        }
+
+        /* Instruction Steps list */
+        .instruction-list {
+            margin: 0;
+            padding-left: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--slate-400);
+            line-height: 1.6;
+        }
+
+        .instruction-list strong {
+            color: #ffffff;
+        }
+
+        /* Action Buttons styling */
+        .action-grid {
+            display: grid;
+            grid-template-cols: 1fr 1fr;
+            gap: 16px;
+            padding-top: 16px;
+        }
+
+        @media (max-width: 640px) {
+            .action-grid {
+                grid-template-cols: 1fr;
+            }
+        }
+
+        .btn-action {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 16px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 800;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            box-sizing: border-box;
+        }
+
+        .btn-whatsapp {
+            background-color: #22c55e;
+            color: #000000;
+            border: none;
+            box-shadow: 0 10px 15px -3px rgba(34, 197, 94, 0.15);
+        }
+
+        .btn-whatsapp:hover {
+            background-color: #4ade80;
+        }
+
+        .btn-support {
+            background-color: var(--slate-800);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .btn-support:hover {
+            background-color: rgba(51, 65, 85, 0.8);
+            border-color: var(--neon-orange);
+        }
+
+        /* Help Info Text */
+        .help-text {
+            text-align: center;
+            font-size: 12px;
+            color: var(--slate-500);
+            line-height: 1.6;
+            margin: 0;
+            max-width: 100%;
+        }
+
+        /* Footer */
+        .footer {
+            padding: 32px 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            text-align: center;
+            color: var(--slate-500);
+            font-size: 12px;
+        }
+
+        /* Toast notifications */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            padding: 10px 16px;
+            background-color: var(--slate-900);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #4ade80;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            opacity: 0;
+            transform: translateY(8px);
+            transition: all 0.3s ease;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 100;
+        }
+
+        .toast.toast-show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .toast i {
+            display: flex;
+            align-items: center;
+        }
+    </style>
+</head>
+
+<body class="relative">
+
+    <!-- Network Topology Background Canvas -->
+    <canvas id="networkCanvas" class="bg-canvas"></canvas>
+
+    <!-- Navigation -->
+    <nav class="nav-bar glass-panel">
+        <div class="nav-container">
+            <div class="logo-section">
+                <div class="logo-wrapper">
+                    <img src="../images/logo.jpeg" alt="Logo" class="logo-img">
+                    <div class="logo-glow"></div>
+                </div>
+                <span class="brand-name">Global <span class="brand-accent">Pratama Ruralindo</span></span>
+            </div>
+
+
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="main-container">
+        <!-- Ambient Background Glows -->
+        <div class="glow-1"></div>
+        <div class="glow-2"></div>
+
+        <div class="content-wrapper">
+
+            <!-- Warning Alert Banner -->
+            <div class="glass-panel alert-banner">
+                <div class="alert-icon-wrapper">
+                    <i data-lucide="wifi-off" style="width: 52px; height: 52px;"></i>
+                </div>
+                <div class="alert-text-wrapper">
+                    <div class="alert-notice-text">
+                        <p>Pelanggan Yth,</p>
+                        <p>Untuk sementara koneksi internet anda tidak bisa digunakan dikarenakan sistem kami mendeteksi
+                            bahwa status langganan internet anda sudah mencapai batas waktu yang ditentukan.</p>
+                        <p>Segera lakukan pembayaran tagihan internet agar internet anda bisa digunakan kembali.</p>
+                        <p>Salam Hormat,<br><strong>PT Global Pratama Ruralindo</strong></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Guide Section -->
+            <div class="payment-section">
+                <h2 class="payment-header">
+                    <i data-lucide="credit-card" style="width: 20px; height: 20px;"></i> Metode & Panduan Pembayaran
+                </h2>
+
+                <!-- Bank BRI Account Accordion -->
+                <div class="glass-panel accordion-item">
+                    <button class="accordion-trigger" onclick="toggleAccordion(this)">
+                        <div class="accordion-title-block">
+                            <span class="bank-badge"><img src="../images/bri.svg" alt="Bank BRI"></span>
+                            <span class="bank-title">Transfer Bank BRI <span class="verification-tag">(Verifikasi
+                                    Manual)</span></span>
+                        </div>
+
+                    </button>
+                    <div class="accordion-content">
+                        <div class="accordion-inner-panel">
+                            <div class="copy-box">
+                                <div class="copy-details">
+                                    <span class="copy-label">NOMOR REKENING BRI</span>
+                                    <span class="copy-value">0314-01-001089-56-9</span>
+                                </div>
+                                <button class="copy-btn" onclick="copyText('031401001089569', this)">
+                                    <i data-lucide="copy" style="width: 16px; height: 16px;"></i>
+                                </button>
+                            </div>
+                            <div class="receiver-text">
+                                Nama Penerima: <strong>PT Global Pratama Ruralindo</strong>
+                            </div>
+                            <ol class="instruction-list">
+                                <li>Buka aplikasi BRImo, Internet Banking, atau kunjungi ATM BRI terdekat.</li>
+                                <li>Pilih menu <strong>Transfer > Ke Sesama Rekening BRI</strong> (atau transfer antar
+                                    bank jika menggunakan bank lain).</li>
+                                <li>Masukkan nomor rekening di atas: <strong>0314-01-001089-56-9</strong>.</li>
+                                <li>Pastikan nama penerima yang muncul adalah <strong>PT Global Pratama
+                                        Ruralindo</strong>.</li>
+                                <li>Masukkan jumlah transfer dengan tepat.</li>
+                                <li>Simpan bukti transfer dan klik tombol <strong>Konfirmasi Pembayaran</strong> di
+                                    bawah untuk mengirim bukti ke CS.</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-grid">
+                <a href="https://api.whatsapp.com/send/?phone=6285138425238&text=Halo+admin+GPR%2C+saya+ingin+mengonfirmasi+pembayaran+tagihan+internet.+Mohon+bantuannya+untuk+mengaktifkan+kembali+layanan+kami.+Terima+kasih.&type=phone_number&app_absent=0"
+                    target="_blank" class="btn-action btn-whatsapp">
+                    <i data-lucide="message-square" style="width: 20px; height: 20px;"></i>
+                    Konfirmasi Pembayaran
+                </a>
+                <a href="https://api.whatsapp.com/send/?phone=6285138425238&text=Halo+admin+GPR+koneksi+saya+mengalami+kendala+isolir+mohon+bantuannya&type=phone_number"
+                    target="_blank" class="btn-action btn-support">
+                    <i data-lucide="headphones" style="width: 20px; height: 20px; color: var(--neon-orange);"></i>
+                    Hubungi CS 24/7
+                </a>
+            </div>
+
+            <!-- Additional Help/Info -->
+            <p class="help-text">
+                Setelah pembayaran terverifikasi, sistem kami akan membuka kembali isolir modem/layanan Anda secara
+                otomatis dalam waktu kurang lebih 5-10 menit. Jika layanan belum aktif, silakan lakukan restart modem
+                Anda (matikan selama 30 detik lalu nyalakan kembali).
+            </p>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        © 2026 PT Global Pratama Ruralindo. Semua hak dilindungi.
+    </footer>
+
+    <!-- Toast Notification for Copy -->
+    <div id="copyToast" class="toast">
+        <i data-lucide="check-circle" style="width: 16px; height: 16px;"></i>
+        <span>Nomor rekening berhasil disalin!</span>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+
+
+        // --------------------------------------------------------
+        // Accordion Animation Logic
+        // --------------------------------------------------------
+        function toggleAccordion(button) {
+            const item = button.closest('.accordion-item');
+            const isActive = item.classList.contains('accordion-active');
+
+            // Close all other accordions first
+            document.querySelectorAll('.accordion-item').forEach(el => {
+                el.classList.remove('accordion-active');
+            });
+
+            if (!isActive) {
+                item.classList.add('accordion-active');
+            } else {
+                item.classList.remove('accordion-active');
+            }
+        }
+
+        // Open first accordion by default
+        document.addEventListener('DOMContentLoaded', () => {
+            const firstAccordionBtn = document.querySelector('.accordion-item button');
+            if (firstAccordionBtn) {
+                toggleAccordion(firstAccordionBtn);
+            }
+        });
+
+        // --------------------------------------------------------
+        // Copy to Clipboard Action
+        // --------------------------------------------------------
+        function copyText(text, btnElement) {
+            navigator.clipboard.writeText(text).then(() => {
+                const toast = document.getElementById('copyToast');
+                toast.classList.add('toast-show');
+
+                const originalHTML = btnElement.innerHTML;
+                btnElement.innerHTML = '<i data-lucide="check" style="width: 16px; height: 16px; color: #4ade80;"></i>';
+                lucide.createIcons();
+
+                setTimeout(() => {
+                    toast.classList.remove('toast-show');
+                    btnElement.innerHTML = originalHTML;
+                    lucide.createIcons();
+                }, 2500);
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+            });
+        }
+
+        // --------------------------------------------------------
+        // Network Canvas Animation (Nodes and Links)
+        // --------------------------------------------------------
+        const canvas = document.getElementById('networkCanvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let particles = [];
+
+        function resize() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 0.3;
+                this.vy = (Math.random() - 0.5) * 0.3;
+                this.size = Math.random() * 2 + 1;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                if (this.x < 0 || this.x > width) this.vx *= -1;
+                if (this.y < 0 || this.y > height) this.vy *= -1;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = '#ff9f0a';
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            const particleCount = Math.min(Math.floor(width * height / 12000), 80);
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+        }
+        initParticles();
+        window.addEventListener('resize', initParticles);
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < 150) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(255, 159, 10, ${1 - distance / 150})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+    </script>
+</body>
+
+</html>
